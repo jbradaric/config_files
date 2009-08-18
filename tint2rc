@@ -1,0 +1,78 @@
+#---------------------------------------------
+# TINT2 CONFIG FILE
+#---------------------------------------------
+
+#---------------------------------------------
+# BACKGROUND AND BORDER
+#---------------------------------------------
+rounded = 7
+border_width = 1
+background_color = #202020 25
+border_color = #989898 50
+
+rounded = 5
+border_width = 0
+background_color = #343434 50
+
+rounded = 5
+border_width = 0
+background_color = #202020 50
+
+#---------------------------------------------
+# PANEL
+#---------------------------------------------
+panel_monitor = all
+panel_position = bottom center
+panel_size = 80% 24
+panel_margin = 0 3
+panel_padding = 7 0
+font_shadow = 0
+panel_background_id = 1
+wm_menu = 0
+
+#---------------------------------------------
+# TASKBAR
+#---------------------------------------------
+taskbar_mode = single_desktop
+taskbar_padding = 2 3 2
+taskbar_background_id = 0
+
+#---------------------------------------------
+# TASKS
+#---------------------------------------------
+task_icon = 0
+task_text = 1
+task_maximum_size = 140 30
+task_centered = 1
+task_padding = 6 3
+task_font = Mono 10
+task_font_color = #989898 100
+task_active_font_color = #0090b4 100
+task_background_id = 3
+task_active_background_id = 2
+
+#---------------------------------------------
+# CLOCK
+#---------------------------------------------
+time1_format = %H:%M
+time1_font = Trebuchet MS 10
+time2_format = %a %b %d
+time2_font = Trebuchet MS 7
+clock_font_color = #989898 100
+clock_padding = 1 0
+clock_background_id = 0
+#clock_lclick_command = xclock
+clock_rclick_command = orage
+
+#---------------------------------------------
+# MOUSE ACTION ON TASK
+#---------------------------------------------
+mouse_middle = none
+mouse_right = none
+mouse_scroll_up = toggle
+mouse_scroll_down = iconify
+
+#---------------------------------------------
+# SYSTRAY
+#---------------------------------------------
+systray_padding = 0 1 1
