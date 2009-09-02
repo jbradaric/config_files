@@ -18,6 +18,7 @@ import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Util.NamedWindows
 import XMonad.Util.Themes
+import XMonad.Util.Dmenu
 
 -- hooks
 import XMonad.Hooks.ManageDocks
@@ -61,19 +62,20 @@ main = do
               , layoutHook = layoutHook'
               , manageHook = manageHook'
               } `additionalKeys`
-              [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
-              , ((mod4Mask, xK_Return), (windows $ W.greedyView "term") >> spawn "terminator")
+              [ ((modMask' .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
+              , ((modMask', xK_Return), (windows $ W.greedyView "term") >> spawn "terminator")
 --              , ((mod4Mask, xK_f), (windows $ W.greedyView "web") >> spawn "swiftfox")         
-              , ((mod4Mask, xK_f), (windows $ W.greedyView "web") >> runOrRaise "swiftfox" (className =? "Swiftfox"))
-              , ((mod4Mask, xK_p), (windows $ W.greedyView "im") >> spawn "pidgin")
-              , ((mod4Mask, xK_a), (windows $ W.greedyView "media") >> spawn "sonata")
-              , ((mod4Mask, xK_g), (windows $ W.greedyView "dev") >> spawn "gvim")
-              , ((mod4Mask, xK_m), (windows $ W.greedyView "media") >> spawn "smplayer")
-              , ((mod4Mask, xK_Left), spawn "sonata prev")
-              , ((mod4Mask, xK_Right), spawn "sonata next")
-              , ((mod4Mask, xK_Up), spawn "sonata pp")
+              , ((modMask', xK_f), (windows $ W.greedyView "web") >> runOrRaise "swiftfox" (className =? "Swiftfox"))
+              , ((modMask', xK_p), (windows $ W.greedyView "im") >> spawn "pidgin")
+              , ((modMask', xK_a), (windows $ W.greedyView "media") >> spawn "sonata")
+              , ((modMask', xK_g), (windows $ W.greedyView "dev") >> spawn "gvim")
+              , ((modMask', xK_m), (windows $ W.greedyView "media") >> spawn "smplayer")
+              , ((modMask', xK_i), (windows $ W.greedyView "irc") >> spawn "terminator --title=IRSSI -e irssi")
+              , ((modMask', xK_Left), spawn "mpc prev")
+              , ((modMask', xK_Right), spawn "mpc next")
+              , ((modMask', xK_Up), spawn "mpc toggle")
               , ((mod1Mask, xK_F2), spawn "gmrun")
-              , ((mod4Mask, xK_h), spawn "thunar")
+              , ((modMask', xK_r), spawn "exe=`/home/m00nblade/.scripts/dmenu_items | dmenu` && eval \"exec $exe\"") -- Launch dmenu
               , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q sset Master 1-")
               , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q sset Master 1+")
               , ((0, xF86XK_AudioMute), spawn "amixer -q sset Master toggle")
@@ -92,6 +94,7 @@ myManageHook = composeAll
     , className =? "MPlayer" --> doF (W.shift "media")
     , className =? "Smplayer" --> doF (W.shift "media") <+> doF(W.swapUp)
     , className =? "Gvim" --> doF (W.shift "dev") <+> doF(W.swapUp)
+    , className =? "Evince" --> doF (W.shift "reading") <+> doF(W.swapUp)
     , resource  =? "desktop_window" --> doIgnore
     ]
 manageHook' :: ManageHook
@@ -100,8 +103,9 @@ manageHook' = (doF W.swapDown) <+> manageHook defaultConfig <+> manageDocks <+> 
 logHook' :: Handle ->  X ()
 logHook' h = (dynamicLogWithPP $ customPP { ppOutput = hPutStrLn h }) >> fadeInactiveLogHook fadeAmount
 
-fadeAmount :: Integer
-fadeAmount = 0x55555555
+fadeAmount :: Rational
+--fadeAmount = 0x55555555
+fadeAmount = 0.4
 
 layoutHook' = customLayout
 
@@ -126,17 +130,19 @@ focusedBorderColor' = "#0775a8"
 
 -- workspaces
 workspaces' :: [WorkspaceId]
-workspaces' = ["term", "dev", "web", "media", "irc", "im", "7", "8", "9"]
+workspaces' = ["term", "dev", "web", "media", "irc", "im", "reading", "8", "9"]
 
 -- layouts
 customLayout = avoidStruts 
                 $ onWorkspaces ["dev", "web"] (tabbed shrinkText (theme wfarrTheme)) 
                 $ onWorkspace "term" (threeCols ||| noBorders Full)
-                $ onWorkspace "im" threeCols
+                $ onWorkspace "im" Grid
+                $ onWorkspace "reading" (noBorders Full ||| tabbed shrinkText (theme wfarrTheme))
                 $ smartBorders tiled 
                 ||| smartBorders (Mirror tiled)  
                 ||| noBorders Full 
                 ||| noBorders (tabbed shrinkText (theme smallClean))
+                ||| Grid
     where
     tiled = ResizableTall 1 (2/100) (1/2) []
     threeCols = ThreeCol 1 (3/100) (1/2)
