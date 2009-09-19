@@ -7,8 +7,13 @@
 " This must be first, because it changes other options as a side effect.
 "-------------------------------------------------------------------------------
 set nocompatible
-colorscheme wombat
+if has("gui_running")
+    colorscheme wombat
+else
+    colorscheme desert256
+endif
 set guifont=Monaco\ 10
+set t_Co=256
 "
 "-------------------------------------------------------------------------------
 " Enable file type detection. Use the default filetype settings.
@@ -49,6 +54,7 @@ set expandtab					" insert spaces for tabs
 set wildignore=*.bak,*.o,*.e,*~ " wildmenu: ignore these extensions
 set wildmenu                    " command-line completion in an enhanced mode
 set number						" turn the line numbers on
+set ve=block                    " set virtualedit mode to block
 "
 "-------------------------------------------------------------------------------
 " Set the backup and temporary directories
@@ -187,6 +193,13 @@ set completeopt=menuone,menu,longest,preview
 "-------------------------------------------------------------------------------
 au FileType c set makeprg=gcc\ %\ \-o\ %:s/\.c//
 au FileType cpp set makeprg=g++\ %\ \-o\ %:s/\.cpp//
+"-------------------------------------------------------------------------------
+" Haskell setup
+"-------------------------------------------------------------------------------
+autocmd Bufenter *.hs compiler ghc
+let g:haddock_browser = "/opt/swiftfox/swiftfox"
+autocmd Bufenter *.hs imap <C-F2> <Esc>:!grep <cword> ~/gtk.txt<CR>
+autocmd Bufenter *.hs nmap <C-F2> <Esc>:!grep <cword> ~/gtk.txt<CR>
 "-------------------------------------------------------------------------------
 " Save and restore folds when closing and re-opening the file
 au BufWinLeave ?* mkview
