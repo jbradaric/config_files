@@ -5,11 +5,13 @@
 
 # exports
 #################################################
-export PATH=/usr/local/bin:$PATH
-export CDPATH=.:/media/external:$CDPATH
+export PATH=/usr/local/bin:/home/m00nblade/bin:$PATH
+#export CDPATH=.:/media/external:$CDPATH
 export EDITOR=vim
 export HISTCONTROL=ignoreboth
 export HISTSIZE=10000
+export MPD_HOST="localhost"
+export MPD_PORT=6601
 
 # history file options
 #################################################
@@ -29,9 +31,6 @@ shopt -s cdspell
 # aliases
 #################################################
 alias pacman='yaourt'
-alias leafpad='leafpad --tab-width 4'
-#alias student='ssh bradaric@student.math.hr'
-#alias proxy='ssh bradaric@student.math.hr -D 9999'
 alias ls='ls --color=auto --group-directories-first'
 alias sl='ls --color=auto --group-directories-first' # to fix spelling errors
 alias la='ls -Al --color=auto --group-directories-first'
@@ -40,11 +39,14 @@ alias up='cd ..'
 alias up2='cd ../..'
 alias up3='cd ../../..'
 alias futurama="curl -Is slashdot.org | egrep '^X-(F|B)' | cut -d \- -f 2"
-alias playlist="audtool2 playlist-addurl"
+alias next='mpc next'
+alias prev='mpc prev'
+alias play='mpc play'
+alias pause='mpc pause'
 
 # prompt colours
 #################################################
-export PS1="${debian_chroot:+($debian_chroot)}\[\e[32;1m\]\u@\h: \[\e[1;34m\]\w \$ \[\e[0;32m\]"
+export PS1="\[\033[35m\]\t\[\033[m\] - \[\e[32;1m\]\u@\h: \[\e[1;34m\]\w \$ \[\e[0;32m\]"
 
 if [ -f /etc/bash_completion ]; then
   . /etc/bash_completion
@@ -81,7 +83,7 @@ function extract () {
 
 function edit () {
   if [ $# -gt 0 ]; then
-    gvim --remote-silent ${*}
+    gvim --remote-silent ${*} > /dev/null 2>&1
   else
     gvim
   fi
@@ -110,9 +112,5 @@ function restart () {
   done
 }
 
-alias next='mpc next'
-alias prev='mpc prev'
-alias play='mpc play'
-alias pause='mpc pause'
 
 # vim: filetype=sh:ts=2:sts=2:sw=2:expandtab
