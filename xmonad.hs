@@ -1,26 +1,24 @@
 {- xmonad.hs
- - Author: brenix (modified) original source: 'Mr.Elendig'
- - Version: 0.0.9
+ - Author: Jurica Bradaric 
+ - Version: 0.9.2
  -}
 
 -------------------------------------------------------------------------------
 -- Imports --
--- stuff
-import Text.Regex.Posix((=~))
+{- misc -}
 import Data.List(isInfixOf)
-import XMonad
-import qualified XMonad.StackSet as W
-import qualified Data.Map as M
-import System.Exit
 import Graphics.X11.Xlib
 import IO (Handle, hPutStrLn) 
 
+{- XMonad stuff -}
+import XMonad
+import qualified XMonad.StackSet as W
+
 -- utils
 import XMonad.Util.Run (spawnPipe)
-import XMonad.Util.EZConfig(additionalKeys)
-import XMonad.Util.NamedWindows
-import XMonad.Util.Themes
-import XMonad.Util.Dmenu
+import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.Themes (theme,donaldTheme)
+import XMonad.Util.Scratchpad (scratchpadSpawnAction)
 
 -- hooks
 import XMonad.Hooks.ManageDocks
@@ -38,18 +36,17 @@ import XMonad.Layout.LayoutHints
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Circle
 import XMonad.Layout.ThreeColumns
-import XMonad.Layout.DecorationMadness
---import XMonad.Layout.Accordion
 import Data.Ratio((%))
 
 -- prompts
 import XMonad.Prompt
-import XMonad.Prompt.Theme
 import XMonad.Prompt.AppendFile
-import XMonad.Prompt.Shell
 
 -- actions
-import XMonad.Actions.WindowGo
+import XMonad.Actions.WindowGo (runOrRaise)
+import XMonad.Actions.FocusNth (focusNth)
+import qualified XMonad.Actions.Search as S
+
 -- extra keys
 import Graphics.X11.ExtraTypes.XF86
 
@@ -57,56 +54,53 @@ import Graphics.X11.ExtraTypes.XF86
 -- Main --
 main = do
        h <- spawnPipe "xmobar" 
-       xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "1"] } $ defaultConfig 
-              { workspaces = workspaces'
-              , modMask = modMask'
-              , borderWidth = borderWidth'
-              , normalBorderColor = normalBorderColor'
-              , focusedBorderColor = focusedBorderColor'
-              , terminal = terminal'
-              , logHook = logHook' h 
-              , layoutHook = layoutHook'
-              , manageHook = manageHook'
-              } `additionalKeys` myKeys
+       xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "1"] } $ myConfig
+        { logHook = logHook' h } `additionalKeysP` myKeys
 
 
 -------------------------------------------------------------------------------
 
+myConfig = defaultConfig
+    { workspaces = workspaces'
+    , modMask = modMask'
+    , borderWidth = borderWidth'
+    , normalBorderColor = normalBorderColor'
+    , focusedBorderColor = focusedBorderColor'
+    , terminal = terminal'
+    , layoutHook = layoutHook'
+    , manageHook = manageHook'
+    }
 
 -- Hooks --
-myManageHook = composeAll
-    [ className =? "Gimp"   --> doFloat
-    , className =? "Pidgin" --> doF (W.shift "im") 
-    , className =? "gmrun"  --> doFloat
-    , className =? "Swiftfox" --> doF (W.shift "web")
-    , className =? "MPlayer" --> doF (W.shift "media")
-    , className =? "Smplayer" --> doF (W.shift "media") <+> doF(W.swapUp)
-    , className =? "Gvim" --> doF (W.shift "dev") <+> doF(W.swapUp)
-    , className =? "Evince" --> doF (W.shift "reading") <+> doF(W.swapUp)
-    , className =? "Acroread" --> doF (W.shift "reading") <+> doF(W.swapUp)
-    , className ==? "uzbl" --> doF (W.shift "web")
-    , className =? "IRSSI" --> doF (W.shift "irc")
-    , resource  =? "desktop_window" --> doIgnore
+myManageHook = (composeAll . concat)
+    [ [className =? name --> doF (W.shift wspace) | (name, wspace) <- myShifts]
+    , [className =? name --> doFloat | name <- myFloats]
+    , [resource  =? resName --> doIgnore | resName <- myIgnored]
     ]
+    where myShifts = [ ("Pidgin", "im")
+                     , ("Swiftfox", "web")
+                     , ("Firefox", "web")
+                     , ("MPlayer", "media")
+                     , ("Smplayer", "media")
+                     , ("Gvim", "dev")
+                     , ("Evince", "reading")
+                     , ("Acroread", "reading")
+                     , ("uzbl", "web")
+                     , ("IRSSI", "irc")
+                     ]
+          myFloats = ["Gimp"]
+          myIgnored = ["desktop_window"]
+
 manageHook' :: ManageHook
 manageHook' = (doF W.swapDown) <+> manageHook defaultConfig <+> manageDocks <+> myManageHook
 
 logHook' :: Handle ->  X ()
 logHook' h = (dynamicLogWithPP $ customPP { ppOutput = hPutStrLn h }) >> fadeInactiveLogHook fadeAmount
 
---fadeAmount :: Rational
---fadeAmount :: Integer
---fadeAmount = 0x55555555
+fadeAmount :: Rational
 fadeAmount = 0.4
 
 layoutHook' = customLayout
-
--- Da xmobar ne prikazuje nazive programa 
-myFunc :: String -> String
-myFunc _ = ""
-
--- Regex match of className - Jurica
-q ==? x = fmap ( =~ x ) q 
 
 -------------------------------------------------------------------------------
 -- Looks --
@@ -114,7 +108,7 @@ q ==? x = fmap ( =~ x ) q
 customPP :: PP
 customPP = defaultPP { ppCurrent = xmobarColor "#0b8bff" ""
                      --, ppTitle =  shorten 20
-                     , ppTitle = myFunc
+                     , ppTitle = \_ -> "" -- Don't show the window title in xmobar
                      , ppSep =  "<fc=#AFAF87>  |  </fc>"
                      , ppHiddenNoWindows = xmobarColor "#ececec" ""
                      , ppUrgent = xmobarColor "#FF0000" "" . wrap "[" "]"
@@ -135,17 +129,13 @@ workspaces' = ["term", "dev", "web", "media", "irc", "im", "reading", "vm", "mai
 -- layouts
 customLayout = avoidStruts 
                 $ onWorkspaces ["dev", "web"] (noBorders (tabbed shrinkText (theme donaldTheme)) ||| smartBorders threeCols)
-                $ onWorkspace "term" (smartBorders threeCols ||| noBorders Full)
+                $ onWorkspaces ["term", "irc"] (smartBorders threeCols ||| noBorders Full)
                 $ onWorkspace "im" Grid
-                $ onWorkspace "reading" (noBorders Full ||| smartBorders (tabbed shrinkText (theme wfarrTheme)))
-                $ onWorkspace "media" (noBorders Circle ||| smartBorders threeCols ||| noBorders Full)
+                $ onWorkspace "reading" (smartBorders (tabbed shrinkText (theme donaldTheme)))
+                $ onWorkspace "media" (noBorders Circle ||| noBorders Full)
                 $ onWorkspace "vm" (noBorders Full)
+                $ onWorkspace "mail" (noBorders Full ||| smartBorders threeCols)
                 $ smartBorders tiled 
-                ||| smartBorders (Mirror tiled)  
-                ||| noBorders Full 
-                ||| noBorders (tabbed shrinkText (theme smallClean))
-                ||| Grid
-                ||| smartBorders Circle
     where
     tiled = ResizableTall 1 (2/100) (1/2) []
     threeCols = ThreeCol 1 (3/100) (1/2)
@@ -153,7 +143,7 @@ customLayout = avoidStruts
 -------------------------------------------------------------------------------
 -- Terminal --
 terminal' :: String
-terminal' = "terminator"
+terminal' = "urxvtc"
 
 -------------------------------------------------------------------------------
 -- Keys/Button bindings --
@@ -161,22 +151,9 @@ terminal' = "terminator"
 modMask' :: KeyMask
 modMask' = mod4Mask
 
-openInUzblXPC :: XPConfig
-openInUzblXPC = defaultXPConfig
-    { defaultText       = "uzbl-browser --uri " 
-    , font              = "xft:Monaco 9"
-    , height            = 28
-    , bgColor           = "black"
-    , fgColor           = "#684"
-    , bgHLight          = "#785"
-    , fgHLight          = "black"
-    , promptBorderWidth = 0
-    , position          = Top
-    }
-
 myDarkXPC :: XPConfig
 myDarkXPC = defaultXPConfig
-    { font = "xft:Monaco 9"
+    { font              = "xft:Monaco 9"
     , height            = 28
     , bgColor           = "black"
     , fgColor           = "#684"
@@ -186,28 +163,39 @@ myDarkXPC = defaultXPConfig
     , position          = Top
     }
 
-myKeys :: [((KeyMask, KeySym), X ())]
-myKeys = [ ((modMask' .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
-        , ((modMask', xK_Return), (windows $ W.greedyView "term") >> spawn "terminator")
-        , ((modMask', xK_f), (windows $ W.greedyView "web") >> runOrRaise "swiftfox" (className =? "Swiftfox"))
-        , ((modMask', xK_p), (windows $ W.greedyView "im") >> spawn "pidgin")
-        , ((modMask', xK_a), (windows $ W.greedyView "media") >> spawn "sonata")
-        , ((modMask', xK_g), (windows $ W.greedyView "dev") >> spawn "gvim")
-        --, ((modMask', xK_m), (windows $ W.greedyView "media") >> spawn "smplayer")
-        , ((modMask', xK_i), (windows $ W.greedyView "irc") >> spawn "terminator --title=IRSSI -e irssi")
-        , ((modMask', xK_Left), spawn "mpc prev")
-        , ((modMask', xK_Right), spawn "mpc next")
-        , ((modMask', xK_Up), spawn "mpc toggle")
-        , ((mod1Mask, xK_F2), spawn "gmrun")
-        , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q sset Master 1-")
-        , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q sset Master 1+")
-        , ((0, xF86XK_AudioMute), spawn "amixer -q sset Master toggle")
-        , ((0, xF86XK_ScreenSaver), spawn "xscreensaver-command -lock")
-        , ((0, xF86XK_Sleep), spawn "sudo pm-suspend")
-        , ((modMask' .|. controlMask, xK_t), themePrompt myDarkXPC)
-        , ((modMask', xK_n), appendFilePrompt myDarkXPC "/home/m00nblade/NOTES")
-        , ((modMask' .|. shiftMask, xK_x), sendMessage ToggleStruts)
-        , ((modMask', xK_u), (windows $ W.greedyView "web") >> spawn "uzbl-browser")
-        , ((modMask', xK_o), spawn "/home/m00nblade/.bin/open_browser.sh")
+myScratchpadConf = defaultConfig
+    { terminal = "urxvtc"
+    }
+
+myKeys :: [(String, X ())]
+myKeys = concat
+        [
+         [ ("M-f", (windows $ W.greedyView "web") >> runOrRaise "swiftfox" (className =? "Swiftfox"))
+         , ("M-p", (windows $ W.greedyView "im") >> spawn "pidgin")
+         , ("M-a", (windows $ W.greedyView "media") >> spawn "sonata")
+         , ("M-i", (windows $ W.greedyView "irc") >> spawn "urxvtc -title IRSSI -e irssi")
+         , ("M-<Left>", spawn "mpc prev")
+         , ("M-<Right>", spawn "mpc next")
+         , ("M-<Up>", spawn "mpc toggle")
+         , ("M-<XF86AudioLowerVolume>", spawn "amixer -q sset Master 1-")
+         , ("M-<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 1+")
+         , ("M-<XF86AudioMute>", spawn "amixer -q sset Master toggle")
+         , ("M-<XF86ScreenSaver>", spawn "i3lock")
+         , ("M-n", appendFilePrompt myDarkXPC "/home/m00nblade/NOTES")
+         , ("M-S-x", sendMessage ToggleStruts)
+         , ("M-u", (windows $ W.greedyView "web") >> spawn "uzbl-browser")
+         , ("M-o", spawn "/home/m00nblade/.bin/open_browser.sh")
+         , ("M-S-t", scratchpadSpawnAction myScratchpadConf) ]
+         , [ ("C-" ++ (show k), focusNth i) | (i, k) <- zip [0..8] [1..]] -- focus the nth window with <Ctrl>-#
+         , [ ("M-s " ++ k, S.promptSearchBrowser myDarkXPC "uzbl-browser" f) | (k, f) <- searchList]
+         , [ ("M-S-s " ++ k, S.selectSearchBrowser "uzbl-browser" f) | (k, f) <- searchSelectionList]
         ]
 
+searchList :: [(String, S.SearchEngine)]
+searchList = [ ("g", S.google)
+             , ("w", S.wikipedia)
+             , ("y", S.youtube)
+             ]
+
+searchSelectionList :: [(String, S.SearchEngine)]
+searchSelectionList = ("t", S.thesaurus) : searchList
