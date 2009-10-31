@@ -4,36 +4,80 @@ XTerm*cursorColor: Green
 
 Vim*geometry:	145x48
 
-URxvt*background:       	#000000
-URxvt*foreground:       	#ffffff
-URxvt*inheritPixmap:    	true
-URxvt*reverseVideo:		    false
-URxvt*tintColor:        	#dfdfdf
-URxvt*shading:	            5		!trans, 0=opaque    
-URxvt*fading:	            10		!term unfocus      
-URxvt*font:                 xft:Monaco:pixelsize=12
-URxvt*scrollBar:		    false
-URxvt*scrollBar_floating:	true
-URxvt*scrollBar_right:	    false
-URxvt*scrollColor:		    #000000
-URxvt*saveLines:		    5500
-URxvt*cursorColor:          #8ae234
-URxvt*colorBD:		        lightyellow
-URxvt*colorUL:		        pink
+#URxvt*background:       	#000000
+#URxvt*foreground:       	#ffffff
+#URxvt*inheritPixmap:    	true
+#URxvt*reverseVideo:		    false
+#URxvt*tintColor:        	#dfdfdf
+#URxvt*shading:	            5		!trans, 0=opaque    
+#URxvt*fading:	            10		!term unfocus      
+#URxvt*font:                 xft:Monaco:pixelsize=12
+#URxvt*scrollBar:		    false
+#URxvt*scrollBar_floating:	true
+#URxvt*scrollBar_right:	    false
+#URxvt*scrollColor:		    #000000
+#URxvt*saveLines:		    5500
+#URxvt*cursorColor:          #8ae234
+#URxvt*colorBD:		        lightyellow
+#URxvt*colorUL:		        pink
+#
+#URxvt*color0: #2E3436
+#URxvt*color1: #CC0000
+#URxvt*color2: #4E9A06
+#URxvt*color3: #C4A000
+#URxvt*color4: #3465A4
+#URxvt*color5: #75507B
+#URxvt*color6: #06989A
+#URxvt*color7: #D37DCF
+#URxvt*color8: #557553
+#URxvt*color9: #EF2929
+#URxvt*color10: #8AE234
+#URxvt*color11: #FCE94F
+#URxvt*color12: #729FCF
+#URxvt*color13: #AD7FA8
+#URxvt*color14: #34E2E2
+#URxvt*color15: #EEEEEC
+#URxvt*termName: rxvt-256co
 
-URxvt*color0: #2E3436
-URxvt*color1: #CC0000
-URxvt*color2: #4E9A06
-URxvt*color3: #C4A000
-URxvt*color4: #3465A4
-URxvt*color5: #75507B
-URxvt*color6: #06989A
-URxvt*color7: #D37DCF
-URxvt*color8: #557553
-URxvt*color9: #EF2929
-URxvt*color10: #8AE234
-URxvt*color11: #FCE94F
-URxvt*color12: #729FCF
-URxvt*color13: #AD7FA8
-URxvt*color14: #34E2E2
-URxvt*color15: #EEEEEC
+## borderless and no scrollbar
+URxvt*scrollBar_right: false
+URxvt*scrollBar: false
+URxvt*borderLess: false
+
+## teh transparency stuff
+URxvt*inheritPixmap: true
+URxvt*tintColor: #dfdfdf
+URxvt*shading: 40
+
+## geometry and font
+URxvt*geometry: 84×24
+URxvt*font: xft:Monaco:pixelsize=12
+
+## misc
+URxvt*saveLines: 5000
+
+## clickable links
+URxvt*perl-ext-common: default,matcher
+URxvt*urlLauncher: uzbl-browser
+URxvt*matcher.button: 2
+URxvt*matcher.pattern.1: \\bwww\\.[\\w-]\\.[\\w./?&@#-]*[\\w/-]
+
+## change default colors
+URxvt*background: #000000
+URxvt*foreground: #A8A8A8
+URxvt*color0: #000000
+URxvt*color1: #A80000
+URxvt*color2: #00A800
+URxvt*color3: #A85400
+URxvt*color4: #0000A8
+URxvt*color5: #A800A8
+URxvt*color6: #00A8A8
+URxvt*color7: #A8A8A8
+URxvt*color8: #545054
+URxvt*color9: #F85450
+URxvt*color10: #50FC50
+URxvt*color11: #F2FC50
+URxvt*color12: #5054F8
+URxvt*color13: #F854F8
+URxvt*color14: #50FCF8
+URxvt*color15: #F8FCF8 
