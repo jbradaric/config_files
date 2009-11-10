@@ -73,9 +73,11 @@ myConfig = defaultConfig
 
 -- Hooks --
 myManageHook = (composeAll . concat)
-    [ [className =? name --> doF (W.shift wspace) | (name, wspace) <- myShifts]
+    [ [className =? name --> doShift wspace | (name, wspace) <- myShifts]
     , [className =? name --> doFloat | name <- myFloats]
     , [resource  =? resName --> doIgnore | resName <- myIgnored]
+--    , [className =? "uzbl" --> doF (W.shift "web") <+> doF W.focusDown]
+    , [className =? name --> doShift wspace <+> doF W.focusDown | (name, wspace) <- myBackgrounded]
     ]
     where myShifts = [ ("Pidgin", "im")
                      , ("Swiftfox", "web")
@@ -85,11 +87,11 @@ myManageHook = (composeAll . concat)
                      , ("Gvim", "dev")
                      , ("Evince", "reading")
                      , ("Acroread", "reading")
-                     , ("uzbl", "web")
                      , ("IRSSI", "irc")
                      ]
           myFloats = ["Gimp"]
           myIgnored = ["desktop_window"]
+          myBackgrounded = [("uzbl", "web")]
 
 manageHook' :: ManageHook
 manageHook' = (doF W.swapDown) <+> manageHook defaultConfig <+> manageDocks <+> myManageHook
@@ -110,8 +112,10 @@ customPP = defaultPP { ppCurrent = xmobarColor "#0b8bff" ""
                      --, ppTitle =  shorten 20
                      , ppTitle = \_ -> "" -- Don't show the window title in xmobar
                      , ppSep =  "<fc=#AFAF87>  |  </fc>"
-                     , ppHiddenNoWindows = xmobarColor "#ececec" ""
+                     --, ppHiddenNoWindows = xmobarColor "#ececec" ""
                      , ppUrgent = xmobarColor "#FF0000" "" . wrap "[" "]"
+                     , ppHidden = \_ -> ""
+                     , ppHiddenNoWindows = \_ -> ""
                      }
 
 -- borders
@@ -177,14 +181,14 @@ myKeys = concat
          , ("M-<Left>", spawn "mpc prev")
          , ("M-<Right>", spawn "mpc next")
          , ("M-<Up>", spawn "mpc toggle")
-         , ("M-<XF86AudioLowerVolume>", spawn "amixer -q sset Master 1-")
-         , ("M-<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 1+")
-         , ("M-<XF86AudioMute>", spawn "amixer -q sset Master toggle")
-         , ("M-<XF86ScreenSaver>", spawn "i3lock")
+         , ("<XF86AudioLowerVolume>", spawn "amixer -q sset Master 1-")
+         , ("<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 1+")
+         , ("<XF86AudioMute>", spawn "amixer -q sset Master toggle")
+         , ("<XF86ScreenSaver>", spawn "i3lock")
          , ("M-n", appendFilePrompt myDarkXPC "/home/m00nblade/NOTES")
          , ("M-S-x", sendMessage ToggleStruts)
          , ("M-u", (windows $ W.greedyView "web") >> spawn "uzbl-browser")
-         , ("M-o", spawn "/home/m00nblade/.bin/open_browser.sh")
+         , ("M-o", spawn "/home/m00nblade/bin/open_browser.sh")
          , ("M-S-t", scratchpadSpawnAction myScratchpadConf) ]
          , [ ("C-" ++ (show k), focusNth i) | (i, k) <- zip [0..8] [1..]] -- focus the nth window with <Ctrl>-#
          , [ ("M-s " ++ k, S.promptSearchBrowser myDarkXPC "uzbl-browser" f) | (k, f) <- searchList]
@@ -195,7 +199,10 @@ searchList :: [(String, S.SearchEngine)]
 searchList = [ ("g", S.google)
              , ("w", S.wikipedia)
              , ("y", S.youtube)
+             , ("i", S.imdb)
+             , ("o", myNewEngine)
              ]
+            where myNewEngine = S.searchEngine "uzbl" "" -- TODO: use searchEngineF
 
 searchSelectionList :: [(String, S.SearchEngine)]
 searchSelectionList = ("t", S.thesaurus) : searchList

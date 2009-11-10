@@ -5,7 +5,7 @@
 
 # exports
 #################################################
-export PATH=/usr/local/bin:/home/m00nblade/bin:$PATH
+#export PATH=/usr/local/bin:$PATH
 #export CDPATH=.:/media/external:$CDPATH
 export EDITOR=vim
 export HISTCONTROL=ignoreboth
@@ -39,6 +39,7 @@ alias up='cd ..'
 alias up2='cd ../..'
 alias up3='cd ../../..'
 alias futurama="curl -Is slashdot.org | egrep '^X-(F|B)' | cut -d \- -f 2"
+alias man='man -P /usr/bin/most'
 alias next='mpc next'
 alias prev='mpc prev'
 alias play='mpc play'
