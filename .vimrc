@@ -7,13 +7,13 @@
 " This must be first, because it changes other options as a side effect.
 "-------------------------------------------------------------------------------
 set nocompatible
+set t_Co=256
 if has("gui_running")
     colorscheme wombat
 else
     colorscheme desert256
 endif
 set guifont=Monaco\ 10
-set t_Co=256
 "
 "-------------------------------------------------------------------------------
 " Enable file type detection. Use the default filetype settings.
@@ -153,9 +153,9 @@ xnoremap  `  s``<Esc>P<Right>
 " PhpDoc settings
 "-------------------------------------------------------------------------------
 source ~/.vim/plugin/php-doc.vim 
-inoremap <C-D> <Esc>:call PhpDocSingle()<CR>a
-nnoremap <C-D> :call PhpDocSingle()<CR>
-vnoremap <C-D> :call PhpDocSingle()<CR>
+inoremap <C-C> <Esc>:call PhpDocSingle()<CR>a
+nnoremap <C-C> :call PhpDocSingle()<CR>
+vnoremap <C-C> :call PhpDocSingle()<CR>
 "-------------------------------------------------------------------------------
 " gui options
 "-------------------------------------------------------------------------------
@@ -198,8 +198,6 @@ au FileType cpp set makeprg=g++\ %\ \-o\ %:s/\.cpp//
 "-------------------------------------------------------------------------------
 autocmd Bufenter *.hs compiler ghc
 let g:haddock_browser = "/opt/swiftfox/swiftfox"
-autocmd Bufenter *.hs imap <C-F2> <Esc>:!grep <cword> ~/gtk.txt<CR>
-autocmd Bufenter *.hs nmap <C-F2> <Esc>:!grep <cword> ~/gtk.txt<CR>
 "-------------------------------------------------------------------------------
 " Save and restore folds when closing and re-opening the file
 au BufWinLeave ?* mkview
@@ -218,11 +216,6 @@ imap <A-a> <Esc>za<CR>a
 "-------------------------------------------------------------------------------
 map ;b		GoZ<Esc>:g/^$/.,/./-j<CR>Gdd
 "imap <C-F12>	GoZ<Esc>:g/^$/.,/./-j<CR>Gddi
-"-------------------------------------------------------------------------------
-" Emacs style vim exit (C-c C-x)
-"-------------------------------------------------------------------------------
-map <C-c><C-x>		:q<CR>
-imap <C-c><C-x>		<Esc>:q<CR>
 "-------------------------------------------------------------------------------
 " Set ignore case unless the search term is in uppercase
 "-------------------------------------------------------------------------------
