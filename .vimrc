@@ -1,3 +1,7 @@
+" File: .vimrc
+" Author: Jurica Bradarić
+" Description: My .vimrc file
+" Last Modified: January 17, 2010
 "===================================================================================
 " GENERAL SETTINGS
 "===================================================================================
@@ -38,7 +42,7 @@ set browsedir=current           " which directory to use for the file browser
 set complete+=k                 " scan the files given with the 'dictionary' option
 set history=50                  " keep 50 lines of command line history
 set undolevels=1000				" lots and lots of undo
-set hlsearch                    " highlight the last used search pattern
+"set hlsearch                    " highlight the last used search pattern
 set incsearch                   " do incremental searching
 set listchars=tab:>.,eol:\$     " strings to use in 'list' mode
 set mouse=a                     " enable the use of the mouse
@@ -278,3 +282,7 @@ imap    <C-F7>  <Esc>:TlistToggle<CR>
 nmap    <C-F7>  :TlistToggle<CR>
 imap    <C-F6>  <Esc>:Project<CR>
 nmap    <C-F6>  <Plug>ToggleProject<CR>
+"-------------------------------------------------------------------------------
+" C/C++ comments
+"-------------------------------------------------------------------------------
+autocmd FileType c,cpp,h,hpp set comments=sl:/**,mb:\ *,elx:\ */
