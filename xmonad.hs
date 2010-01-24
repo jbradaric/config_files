@@ -229,7 +229,7 @@ showDictionary = inputPrompt myDarkXPC "Dictionary search" ?+ spawnDictionary
 showThesaurus :: X ()
 showThesaurus = do
     query <- getSelection
-    spawnDictionary $ "-d moby-thesaurus" ++ query
+    spawnDictionary $ "-d moby-thesaurus " ++ query
 
 -- Show a dzen2 window with the output of the dict program for
 -- the given word
