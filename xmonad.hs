@@ -214,46 +214,52 @@ myKeys = concat
          , ("M-n", appendFilePrompt myDarkXPC "/home/m00nblade/NOTES")
          , ("M-S-x", sendMessage ToggleStruts)
          , ("M-S-t", scratchpadSpawnAction myScratchpadConf)
-         , ("M-d d", showDictionary)
-         , ("M-d t", showThesaurus)
+         , ("M-d d", getSelection >>= spawnDictionary myDictionary)
+         , ("M-d t", getSelection >>= spawnDictionary myThesaurus)
+         , ("M-d m", inputPrompt myDarkXPC "Dictionary search" >>= spawnDictionary' myDictionary)
          ]
-         , [ ("C-" ++ show k, focusNth i) | (i, k) <- zip [0..8] [1..]] -- focus the nth window with <Ctrl>-#
+         {- focus the nth window with <Ctrl>-# -}
+         , [ ("C-" ++ show k, focusNth i) | (i, k) <- zip [0..8] [1..]]
         ]
 
+{- dictionary and thesaurus to use for word lookup -}
+myDictionary, myThesaurus :: String
+myDictionary = " -d wn "
+myThesaurus = " -d moby-thesaurus "
 
--- Ask user to input a search term and show the dictionary entry for that term
-showDictionary :: X ()
-showDictionary = inputPrompt myDarkXPC "Dictionary search" ?+ spawnDictionary
-
--- Search the selected word in the thesaurus
-showThesaurus :: X ()
-showThesaurus = do
-    query <- getSelection
-    spawnDictionary $ "-d moby-thesaurus " ++ query
-
--- Show a dzen2 window with the output of the dict program for
--- the given word
-spawnDictionary :: String -> X ()
-spawnDictionary word = spawn $ "dict " 
-                        ++ word
-                        ++ " | fold | dzen2 -l 16 -p -w 800 "
-                        ++ "-bg '" ++ bgColor myDarkXPC ++ "' "
-                        ++ "-fg '" ++ fgColor myDarkXPC ++ "' " 
-                        ++ "-fn 'Monaco-9' "
-                        ++ "-x 300 -y 300 "
-                        ++ "-e 'onstart=scrollhome,uncollapse;"
-                        ++ "button4=scrollup;"
-                        ++ "button5=scrolldown;"
-                        ++ "button1=exit'"
+ 
+{-
+ - Checks if there was actually an input from the user.
+ - If there wasn't, do nothing.
+ -}
+spawnDictionary' :: String -> Maybe String -> X ()
+spawnDictionary' dict word =
+    case word of
+         Just word -> spawnDictionary dict word
+         Nothing -> return ()
 
 {-
- - searchList :: [(String, S.SearchEngine)]
- - searchList = [ ("g", S.google)
- -              , ("w", S.wikipedia)
- -              , ("y", S.youtube)
- -              , ("i", S.imdb)
- -              ]
- - 
- - searchSelectionList :: [(String, S.SearchEngine)]
- - searchSelectionList = ("t", S.thesaurus) : searchList
+ - The arguments to the sed utility. Used to highlight some words in
+ - the output of dict.
  -}
+sedArgs :: String
+sedArgs =  "-e '1,4d' "
+        ++ "-e 's/{\\([^}]*\\)}/^fg(white)\\1^fg()/g' "
+        ++ "-e 's/\\(\\[syn:\\)/^fg(#ccd)\\1^fg()/g' "
+{-
+ - Show a dzen2 window with the output of the dict program for
+ - the given word
+ -}
+spawnDictionary :: String -> String -> X ()
+spawnDictionary args word = spawn $ "dict " 
+                               ++ args ++ " '" ++ word ++ "' "
+                               ++ " | sed " ++ sedArgs
+                               ++ " | dzen2 -l 16 -p -w 700 "
+                               ++ "-bg '" ++ bgColor myDarkXPC ++ "' "
+                               ++ "-fg '" ++ fgColor myDarkXPC ++ "' " 
+                               ++ "-fn 'Monaco-9' "
+                               ++ "-x 300 -y 300 "
+                               ++ "-e 'onstart=scrollhome,uncollapse;"
+                               ++ "button4=scrollup;"
+                               ++ "button5=scrolldown;"
+                               ++ "button1=exit'"
