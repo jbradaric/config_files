@@ -1,0 +1,21 @@
+# set to yes if you want Conky to be forked in the background
+background no
+
+cpu_avg_samples 2
+net_avg_samples 2
+
+out_to_console yes
+
+# Update interval in seconds
+update_interval 1
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+text_buffer_size 512
+
+# MPD host/port
+mpd_host localhost
+mpd_port 6601
+
+TEXT
+^fg(blue)[${execi 300 $HOME/.scripts/gmail.py}^fg(blue)][^fg()^bg()^i(/home/m00nblade/.icons/dzen2/cpu.xbm) ^fg(green)${cpu cpu1}% ${cpu cpu2}%^fg() ${platform coretemp.0 temp 1}°C ${platform coretemp.1 temp 1}°C^fg(blue)][^fg()^i(/home/m00nblade/.icons/dzen2/mem.xbm) ^fg(lightblue)$memperc%^fg(blue)][^fg(darkgreen)^i(/home/m00nblade/.icons/dzen2/dzen_bitmaps/arr_down.xbm)^fg() ${downspeed eth0} ^fg(darkorange)^i(/home/m00nblade/.icons/dzen2/dzen_bitmaps/arr_up.xbm)^fg() ${upspeed eth0}^fg(darkgreen)^i(/home/m00nblade/.icons/dzen2/dzen_bitmaps/arr_down.xbm)^fg(darkorange)^i(/home/m00nblade/.icons/dzen2/dzen_bitmaps/arr_up.xbm)^fg()${execi 60 vnstat -d | grep `date +'%m/%d/%y'` | awk '{print $8, $9}'}^fg(blue)][^fg(lightblue)${time %H:%M %d.%m.%Y}^fg(blue)]
