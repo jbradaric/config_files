@@ -5,3 +5,6 @@
 # Fix Home/End keys
 "\e[1~":beginning-of-line
 "\e[4~":end-of-line
+
+# Cycle through completions
+TAB: menu-complete
