@@ -1,0 +1,7 @@
+# Search history with up/down arrows
+"\e[A":history-search-backward
+"\e[B":history-search-forward
+
+# Fix Home/End keys
+"\e[1~":beginning-of-line
+"\e[4~":end-of-line
