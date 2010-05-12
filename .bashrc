@@ -12,6 +12,7 @@ export HISTCONTROL=ignoreboth
 export HISTSIZE=10000
 export MPD_HOST="localhost"
 export MPD_PORT=6601
+export HAXE_LIBRARY_PATH=/opt/haxe/std:.
 
 # history file options
 #################################################
@@ -30,7 +31,6 @@ shopt -s cdspell
 
 # aliases
 #################################################
-alias pacman='yaourt'
 alias ls='ls --color=auto --group-directories-first'
 alias sl='ls --color=auto --group-directories-first' # to fix spelling errors
 alias la='ls -Al --color=auto --group-directories-first'
@@ -40,10 +40,16 @@ alias up2='cd ../..'
 alias up3='cd ../../..'
 alias futurama="curl -Is slashdot.org | egrep '^X-(F|B)' | cut -d \- -f 2"
 alias man='man -P /usr/bin/most'
-alias next='mpc next'
-alias prev='mpc prev'
-alias play='mpc play'
-alias pause='mpc pause'
+# alias mpich2='/opt/mpich2/bin/mpd'
+# alias mpicc='/opt/mpich2/bin/mpicc'
+# alias mpicxx='/opt/mpich2/bin/mpicxx'
+# alias mpiexec='/opt/mpich2/bin/mpiexec'
+alias serije='cd /data/encrypted/video/serije'
+alias filmovi='cd /data/encrypted/video/filmovi'
+alias getmyip='wget www.whatismyip.com/automation/n09230945.asp -O - -o /dev/null'
+alias gimme='sudo pacman -S'
+alias isthere='pacman -Ss'
+alias gtfo='sudo pacman -R'
 
 # prompt colours
 #################################################
@@ -84,7 +90,7 @@ function extract () {
 
 function edit () {
   if [ $# -gt 0 ]; then
-    gvim --remote-silent ${*} > /dev/null 2>&1
+    gvim --remote-silent "$*" > /dev/null 2>&1
   else
     gvim
   fi
