@@ -1,5 +1,7 @@
 #!/bin/sh
 
+## Last Modified: Sat May 29, 2010  08:46PM
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -13,6 +15,7 @@ export HISTSIZE=10000
 export MPD_HOST="localhost"
 export MPD_PORT=6601
 export HAXE_LIBRARY_PATH=/opt/haxe/std:.
+export LESS='--LINE-NUMBERS --quit-if-one-screen --quit-on-intr'
 
 # history file options
 #################################################
@@ -27,97 +30,25 @@ set -o vi
 #################################################
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 unset MAILCHECK     # disable new mail warning
-shopt -s cdspell    
+shopt -s cdspell
 
-# aliases
-#################################################
-alias ls='ls --color=auto --group-directories-first'
-alias sl='ls --color=auto --group-directories-first' # to fix spelling errors
-alias la='ls -Al --color=auto --group-directories-first'
-alias ps='ps aux'
-alias up='cd ..'
-alias up2='cd ../..'
-alias up3='cd ../../..'
-alias futurama="curl -Is slashdot.org | egrep '^X-(F|B)' | cut -d \- -f 2"
-alias man='man -P /usr/bin/most'
-# alias mpich2='/opt/mpich2/bin/mpd'
-# alias mpicc='/opt/mpich2/bin/mpicc'
-# alias mpicxx='/opt/mpich2/bin/mpicxx'
-# alias mpiexec='/opt/mpich2/bin/mpiexec'
-alias serije='cd /data/encrypted/video/serije'
-alias filmovi='cd /data/encrypted/video/filmovi'
-alias getmyip='wget www.whatismyip.com/automation/n09230945.asp -O - -o /dev/null'
-alias gimme='sudo pacman -S'
-alias isthere='pacman -Ss'
-alias gtfo='sudo pacman -R'
-
-# prompt colours
-#################################################
-export PS1="\[\033[35m\]\t\[\033[m\] - \[\e[32;1m\]\u@\h: \[\e[1;34m\]\w \$ \[\e[0;32m\]"
-
+# bash completion
 if [ -f /etc/bash_completion ]; then
   . /etc/bash_completion
 fi
 
-# Emulate the "set autopushd" of zsh
+# functions
+if [ -f $HOME/.bash_functions ]; then
+  . $HOME/.bash_functions
+fi
+
+# aliases
+if [ -f $HOME/.bash_aliases ]; then
+  . $HOME/.bash_aliases
+fi
+
+# prompt colours
 #################################################
-function cd() {
-  builtin pushd "${*:-$HOME}" > /dev/null
-}
-
-alias back="popd > /dev/null"
-#################################################
-
-# Function to extract archives
-function extract () {
-  if [ -f "$1" ]; then
-    case "$1" in
-      *.tar.bz2)      tar xjvf "$1"   ;;
-      *.tar.gz)       tar xzvf "$1"   ;;
-      *.bz2)          bunzip2 "$1"    ;;
-      *.rar)          unrar x "$1"    ;;
-      *.gz)           gunzip "$1"     ;;
-      *.tar)          tar xvf "$1"    ;;
-      *.tbz2)         tar xvjf "$1"   ;;
-      *.tgz)          tar xvzf "$1"   ;;
-      *.zip)          unzip "$1"      ;;
-      *)              echo "Don't know how to extract '$1'..." ;;
-    esac
-  else
-    echo "'$1' is not a valid file!"
-  fi
-}
-
-function edit () {
-  if [ $# -gt 0 ]; then
-    gvim --remote-silent "$*" > /dev/null 2>&1
-  else
-    gvim
-  fi
-}
-
-alias gvim=edit
-
-# start/stop/restart services
-####################################################
-function start () {
-  for arg in $*; do
-    sudo /etc/rc.d/$arg start
-  done
-}
-
-function stop () {
-  for arg in $*; do
-    sudo /etc/rc.d/$arg stop
-  done
-}
-
-
-function restart () {
-  for arg in $*; do
-    sudo /etc/rc.d/$arg restart
-  done
-}
-
+export PS1="\[\033[35m\]\t\[\033[m\] - \[\e[32;1m\]\u@\h: \[\e[1;34m\]\w \$ \[\e[0;32m\]"
 
 # vim: filetype=sh:ts=2:sts=2:sw=2:expandtab
