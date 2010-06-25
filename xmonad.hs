@@ -204,8 +204,8 @@ myBrowser = "firefox"
 myKeys :: [(String, X ())]
 myKeys = concat
         [
-         {- [ ("M-f", windows (W.greedyView "web") >> runOrRaise "firefox" (className =? "Namoroka")) -}
-         [ ("M-f", windows (W.greedyView "web") >> runOrRaise "firefox-lorentz" (className =? "Firefox"))
+         [ ("M-f", windows (W.greedyView "web") >> runOrRaise "firefox" (className =? "Namoroka"))
+         {- [ ("M-f", windows (W.greedyView "web") >> runOrRaise "firefox" (className =? "Firefox")) -}
          , ("M-p", windows (W.greedyView "im") >> spawn "pidgin")
          , ("M-a", windows (W.greedyView "media") >> spawn "sonata")
          , ("M-i", windows (W.greedyView "irc") >> spawn "urxvtc -title IRSSI -e irssi")
@@ -223,7 +223,7 @@ myKeys = concat
          , ("M-d d", getSelection >>= spawnDictionary myDictionary)
          , ("M-d t", getSelection >>= spawnDictionary myThesaurus)
          , ("M-d m", inputPrompt myDarkXPC "Dictionary search" >>= spawnDictionary' myDictionary)
-         , ("M-c s", spawn "/home/m00nblade/.scripts/switch_conky.sh") -- switch conky configuration to match the running network interface
+         , ("M-c s", spawn "/home/m00nblade/.scripts/switch_conk.sh") -- switch conky configuration to match the running network interface
          , ("M-w s", spawn "/home/m00nblade/.scripts/wallpaper.sh") -- switch to a random wallpaper
          ]
          {- focus the nth window with <Ctrl>-# -}
