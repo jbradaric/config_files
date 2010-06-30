@@ -42,7 +42,11 @@ nmap goo ogoogle<Space>
 nmap gw owikipedia<Space>
 nmap gy oyoutube<Space>
 nmap gd oduck<Space>
+
+" Toggle the bookmarks toolbar
 nmap gbt :toolbartoggle<Space>Bookmarks<Space>Toolbar<CR>
+
+" Reddit shortcuts
 nmap gra :open http://www.reddit.com/r/AskReddit<CR>
 nmap grp :open http://www.reddit.com/r/Programming<CR>
 nmap grl :open http://www.reddit.com/r/Linux<CR>
