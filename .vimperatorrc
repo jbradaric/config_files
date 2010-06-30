@@ -43,8 +43,8 @@ nmap gw owikipedia<Space>
 nmap gy oyoutube<Space>
 nmap gd oduck<Space>
 nmap gbt :toolbartoggle<Space>Bookmarks<Space>Toolbar<CR>
-nmap gra ohttp://www.reddit.com/r/AskReddit
-nmap grp ohttp://www.reddit.com/r/Programming
-nmap grl ohttp://www.reddit.com/r/Linux
+nmap gra :open http://www.reddit.com/r/AskReddit<CR>
+nmap grp :open http://www.reddit.com/r/Programming<CR>
+nmap grl :open http://www.reddit.com/r/Linux<CR>
 
 " vim: set ft=vimperator:
