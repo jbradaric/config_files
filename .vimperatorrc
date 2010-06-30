@@ -1,0 +1,50 @@
+" 2.1 (created: 2009/05/21 13:13:06)
+" Last Modified: Wed Jun 30, 2010  04:00PM
+
+set runtimepath=/home/m00nblade/.vimperator
+
+" Load userstyles
+source ~/.vimperator/styles/styles.js
+styledisable -name global
+
+" Use Edit->Copy for yanking
+js <<EOF
+mappings.addUserMap([modes.NORMAL], ["Y"], 
+    "Yank the currently selected text",
+    function () {
+        buffer.getCurrentWord();
+        /*events.feedkeys("<C-v>" + (/^Mac/.test(navigator.platform) ? "<M-c>" : "<C-c>"), true);*/
+        events.feedkeys("<C-v><C-c>", true);
+        setTimeout( function () {
+          liberator.echo("Yanked " + util.readFromClipboard(), commandline.FORCE_SINGLELINE);
+        }, 20 );
+    });
+EOF
+
+" Fix the missing status bar
+js document.getElementById('status-bar').collapsed = 0
+
+" use Awesomebar
+set complete=l
+set wildoptions=auto
+
+" Only show the web page, nothing else
+set guioptions=
+
+" Hide the tab bar
+set showtabline=0
+
+" Set the colorscheme
+colorscheme obsidian
+
+" Search shortcuts
+nmap goo ogoogle<Space>
+nmap gw owikipedia<Space>
+nmap gy oyoutube<Space>
+nmap gd oduck<Space>
+nmap gbt :toolbartoggle<Space>Bookmarks<Space>Toolbar<CR>
+nmap gra ohttp://www.reddit.com/r/AskReddit
+nmap grp ohttp://www.reddit.com/r/Programming
+nmap grl ohttp://www.reddit.com/r/Linux
+
+" vim: set ft=vimperator:
