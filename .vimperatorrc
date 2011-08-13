@@ -7,27 +7,34 @@ set complete=sl
 " Only show the web page, nothing else
 set gui=tabs
 
-" Search shortcuts
-nmap goo ogoogle<Space>
-nmap gwi owikipedia<Space>
-nmap gy oyoutube<Space>
+" Don't show the link destination (Firefox already shows this)
+set showstatuslinks=0
 
-" Reddit shortcuts
-nmap gra :open http://www.reddit.com/r/AskReddit<CR>
-nmap grp :open http://www.reddit.com/r/Programming<CR>
-nmap grl :open http://www.reddit.com/r/Linux<CR>
-nmap grA :open http://www.reddit.com/r/ArchLinux<CR>
-nmap grt :open http://www.reddit.com/r/TwoXChromosomes<CR>
+" --- Reddit shortcuts ---
+qmark a http://www.reddit.com/r/AskReddit
+qmark p http://www.reddit.com/r/Programming
+qmark l http://www.reddit.com/r/Linux
+qmark A http://www.reddit.com/r/ArchLinux
+qmark t http://www.reddit.com/r/TwoXChromosomes
 
-" warez-bb shortcuts
-nmap gwm :open http://www.warez-bb.org/viewforum.php?f=4<CR>
-nmap gws :open http://www.warez-bb.org/viewforum.php?f=57<CR>
-nmap gwb :open http://www.warez-bb.org/viewforum.php?f=8<CR>
+" --- warez-bb shortcuts ---
+qmark m http://www.warez-bb.org/viewforum.php?f=4
+qmark s http://www.warez-bb.org/viewforum.php?f=57
+qmark b http://www.warez-bb.org/viewforum.php?f=8
 
-" Miscellaneous shortcuts
-nmap gq :open http://www.questionablecontent.net<CR>
-nmap gx :open http://www.xkcd.com<CR>
+" --- Miscellaneous shortcuts ---
+qmark q :open http://www.questionablecontent.net
+qmark x :open http://www.xkcd.com
 
-nmap gad :set gui=addons
+nmap gad :set gui=addons<CR>
+nmap gaD :set gui=noaddons<CR>
+
+command! cal :js liberator.echo(<datepicker type="grid" xmlns={XUL} />)
+
+" --- browser preferences ---
+set! browser.tabs.closeWindowWithLastTab=false
+
+" load links from other applications in background
+set! browser.tabs.loadDivertedInBackground=true
 
 " vim: set ft=vimperator:
