@@ -2,7 +2,7 @@
 " Last Modified: Wed Jun 30, 2010  04:00PM
 
 " use Awesomebar
-set complete=sl
+set complete=Sl
 
 " Only show the web page, nothing else
 set gui=tabs
@@ -11,20 +11,15 @@ set gui=tabs
 set showstatuslinks=0
 
 " --- Reddit shortcuts ---
-qmark a http://www.reddit.com/r/AskReddit
-qmark p http://www.reddit.com/r/Programming
-qmark l http://www.reddit.com/r/Linux
-qmark A http://www.reddit.com/r/ArchLinux
-qmark t http://www.reddit.com/r/TwoXChromosomes
-
-" --- warez-bb shortcuts ---
-qmark m http://www.warez-bb.org/viewforum.php?f=4
-qmark s http://www.warez-bb.org/viewforum.php?f=57
-qmark b http://www.warez-bb.org/viewforum.php?f=8
+silent qmark a http://www.reddit.com/r/AskReddit
+silent qmark p http://www.reddit.com/r/Programming
+silent qmark l http://www.reddit.com/r/Linux
+silent qmark A http://www.reddit.com/r/ArchLinux
+silent qmark t http://www.reddit.com/r/TwoXChromosomes
 
 " --- Miscellaneous shortcuts ---
-qmark q :open http://www.questionablecontent.net
-qmark x :open http://www.xkcd.com
+silent qmark q http://www.questionablecontent.net
+silent qmark x http://www.xkcd.com
 
 nmap gad :set gui=addons<CR>
 nmap gaD :set gui=noaddons<CR>
